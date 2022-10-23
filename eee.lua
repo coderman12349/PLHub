@@ -523,3 +523,4 @@ _G.charAdded = plr.CharacterAdded:Connect(function(ch)
         v:Disable()
     end
 end)
+end
