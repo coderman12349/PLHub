@@ -41,6 +41,45 @@ MainSection:NewButton("Teleport to crim base", "Teleports you to criminal base",
 )
 end)
 
+MainSection:NewButton("Aimbot (Press right mouse button", "Locks on to people", function(v)
+   --> variables
+local UIS = game:GetService("UserInputService")
+local camera = game.Workspace.CurrentCamera
+--> getting the closest player
+function getClosest()
+local closestPlayer = nil
+local closesDist = math.huge
+for i,v in pairs(game.Players:GetPlayers()) do
+if v ~= game.Players.LocalPlayer then
+local Dist = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).magnitude
+if Dist < closesDist then
+closesDist = Dist
+closestPlayer = v
+end
+end
+end
+return closestPlayer
+end
+
+--> starting the aimbot
+_G.aim = false
+UIS.InputBegan:Connect(function(inp)
+    if inp.UserInputType == Enum.UserInputType.MouseButton2 then
+    _G.aim = true
+    while wait() do
+        camera.CFrame = CFrame.new(camera.CFrame.Position,getClosest().Character.Head.Position)
+        if _G.aim == false then return end
+    end
+    end
+end)
+--> ending the aimbot
+UIS.InputEnded:Connect(function(inp)
+    if inp.UserInputType == Enum.UserInputType.MouseButton2 then
+    _G.aim = false
+    end
+end)
+end)
+
 
 -- PLAYER
 local Player = Window:NewTab("Player")
@@ -87,7 +126,7 @@ end
 
 
 if _G.Hoopz == true then
-   local reset = false
+    local reset = false
  
 pcall(function()
     if _G.stepped then
@@ -113,8 +152,6 @@ local rs = game:GetService("RunService")
 local lib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local window = lib:MakeWindow({Name = "PL Hub"})
 local main = window:MakeTab({Name = "Main"})
-local Player = window:MakeTab({Name = "Player"})
-local Credits = window:MakeTab({Name = "Credits"})
  
 main:AddToggle({Name = "Aimbot", Default = false, Callback = function(v)
     _G.Aimbot = v
@@ -128,16 +165,16 @@ main:AddToggle({Name = "AutoGaurd/Defend", default = false, Callback = function(
     end
     _G.Autogaurd = v
 end})
-
-Player:AddSlider({Name = "WalkSpeed", Min = 16, Max = 19, Default = 16, Color = Color3.fromRGB(80,80,255), Increment = 0.1, Callback = function(v)  
+main:AddSlider({Name = "WalkSpeed", Min = 16, Max = 19, Default = 16, Color = Color3.fromRGB(80, 80, 255), Increment = 0.1, Callback = function(v)
     _G.WS = v
-end})    
+end})
 
-Credits:AddButton({Name = "Made by ! logan ! #0294", Callback = function(v)
+Tab:AddButton({
+	Name = "Button!",
+	Callback = function()
       		print("button pressed")
   	end    
 })
-
  
 local shootingEvent = game:GetService("ReplicatedStorage").shootingEvent
  
