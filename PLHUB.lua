@@ -81,6 +81,10 @@ end)
 end)
 
 
+MainSection:NewButton("ESP Gui", "Opens a ESP Gui", function(v)
+    loadstring(game:HttpGet("https://pastebin.com/raw/T1Bn4Rue", true))()
+end)
+
 -- PLAYER
 local Player = Window:NewTab("Player")
 local PlayerSection = Player:NewSection("Player")
