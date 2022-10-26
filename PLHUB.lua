@@ -571,3 +571,74 @@ _G.charAdded = plr.CharacterAdded:Connect(function(ch)
     end
 end)
 end
+
+
+
+
+_G.Arsenal = false
+if game.PlaceId == 286090429 then 
+    _G.Arsenal = true
+end
+if _G.Arsenal == true then 
+    local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+    local Window = Library.CreateLib("PL Hub", "DarkTheme")
+    
+    local Main = Window:NewTab("Main")
+    local Section = Main:NewSection("Main")
+    Section:NewButton("Aimbot (Press right mouse button", "Locks on to people", function(v)
+        --> variables
+     local UIS = game:GetService("UserInputService")
+     local camera = game.Workspace.CurrentCamera
+     --> getting the closest player
+     function getClosest()
+     local closestPlayer = nil
+     local closesDist = math.huge
+     for i,v in pairs(game.Players:GetPlayers()) do
+     if v ~= game.Players.LocalPlayer and v.Team ~= game.Players.LocalPlayer.Team then
+     local Dist = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).magnitude
+     if Dist < closesDist then
+     closesDist = Dist
+     closestPlayer = v
+     end
+     end
+     end
+     return closestPlayer
+     end
+     
+     --> starting the aimbot
+     _G.aim = false
+     UIS.InputBegan:Connect(function(inp)
+         if inp.UserInputType == Enum.UserInputType.MouseButton2 then
+         _G.aim = true
+         while wait() do
+             camera.CFrame = CFrame.new(camera.CFrame.Position,getClosest().Character.Head.Position)
+             if _G.aim == false then return end
+         end
+         end
+     end)
+     --> ending the aimbot
+     UIS.InputEnded:Connect(function(inp)
+         if inp.UserInputType == Enum.UserInputType.MouseButton2 then
+         _G.aim = false
+         end
+     end)
+     end)
+
+
+
+     
+     
+     
+
+
+
+
+
+
+     
+     local Visuals = Window:NewTab("Visuals")
+     local Section = Visuals:NewSection("Visuals")
+     Section:NewButton("ESP Gui (Look in bottom right corner if u press it)", "opens a ESP GUI", function(v)
+        loadstring(game:HttpGet("https://pastebin.com/raw/T1Bn4Rue", true))()
+end)
+end
