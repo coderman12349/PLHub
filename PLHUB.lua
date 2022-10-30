@@ -263,10 +263,10 @@ if _G.BubbleGumSimulator == true then
 
 	local Main = Window:NewTab("Main")
 	local Section = Main:NewSection("Main")
-	Section:NewToggle("Auto Blow", "ToggleInfo", function(bool)
+	Section:NewToggle("Auto Blow", "Auto blows gum", function(bool)
 		Toggles.GumFarm = bool
 	end)
-	Section:NewToggle("Auto Sell", "ToggleInfo", function(bool)
+	Section:NewToggle("Auto Sell", "Auto sells", function(bool)
 		Toggles.AutoSell = bool
 	end)
 
@@ -283,7 +283,7 @@ if _G.BubbleGumSimulator == true then
 		while true do
 			task.wait()
 			if Toggles.AutoSell then
-				Event:FireServer("SellBubble", "Sell")
+				Event:FireServer("Teleport", "Sell")
 			end
 		end
 	end)
