@@ -158,48 +158,86 @@ if _G.Arsenal == true then
 	local Main = Window:NewTab("Main")
 	local Section = Main:NewSection("Main")
 	Section:NewButton("Aimbot (Press right mouse button", "Locks on to people", function(v)
-		--> variables
-		local UIS = game:GetService("UserInputService")
-		local camera = game.Workspace.CurrentCamera
-		--> getting the closest player
-		function getClosest()
-			local closestPlayer = nil
-			local closesDist = math.huge
-			for i, v in pairs(game.Players:GetPlayers()) do
-				if v ~= game.Players.LocalPlayer and v.Team ~= game.Players.LocalPlayer.Team then
-					local Dist = (
-						game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-						- v.Character.HumanoidRootPart.Position
-					).Magnitude
-					if Dist < closesDist then
-						closesDist = Dist
-						closestPlayer = v
-					end
-				end
-			end
-			return closestPlayer
-		end
+getgenv().Aimbot = true -- aimbot toggle re-execute with true/false
+-- SERVICES --
 
-		--> starting the aimbot
-		_G.aim = false
-		UIS.InputBegan:Connect(function(inp)
-			if inp.UserInputType == Enum.UserInputType.MouseButton2 then
-				_G.aim = true
-				while wait() do
-					camera.CFrame = CFrame.new(camera.CFrame.Position, getClosest().Character.Head.Position)
-					if _G.aim == false then
-						return
-					end
-				end
-			end
-		end)
-		--> ending the aimbot
-		UIS.InputEnded:Connect(function(inp)
-			if inp.UserInputType == Enum.UserInputType.MouseButton2 then
-				_G.aim = false
-			end
-		end)
-	end)
+local Players = game:GetService('Players') -- Players path
+local UIS = game:GetService('UserInputService') -- UserInputService path
+local RunService = game:GetService('RunService') -- RunService path
+local ws = game:GetService('Workspace') -- Workspace path
+
+-- PLR STUFF --
+local lp = Players.LocalPlayer -- localplayer
+local mouse = lp:GetMouse() -- localplayer mouse
+local camera = ws.CurrentCamera -- camera
+
+-- SETTINGS --
+
+local AimbotSettings = { -- settings for aimbot
+    Keybind = Enum.UserInputType.MouseButton2, -- aimkey keybind
+    TeamCheck = true, -- aimbot teamcheck true/false
+    UseFov = false, -- aimbot use FOV true/false
+    AimPart = 'Head', -- aimbot aim part
+    UseTween = false -- aimbot use tween true/false
+}
+
+
+-- Aimbot Variable -- 
+local aiming = false -- aimbot variable
+
+
+
+-- get closest player TO THE MOUSE function
+
+function GetClosestPlayerToMouse()
+local distance = math.huge -- inf number
+local target = nil -- nobody yet
+    for i,v in pairs(Players:GetPlayers()) do -- loop through all players
+        if v ~= lp and getgenv().Aimbot and v.Character then -- checks
+            if AimbotSettings.TeamCheck then -- checks if TeamCheck
+                if v.TeamColor ~= lp.TeamColor then -- if is not on same team as localplayer
+                    --
+                    local number = camera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position) -- player 3d to 2d point
+                    local mag = (Vector2.new(mouse.X, mouse.Y) - Vector2.new(number.X, number.Y)).magnitude -- distance from mouse to number ^^
+                    if mag < distance then -- if its less than the inf number or the last one then
+                        distance = mag -- set it as the new one
+                        target = v -- set target
+                    end
+                end
+            else -- team check is false
+                --
+                local number = camera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position) -- player 3d to 2d point
+                    local mag = (Vector2.new(mouse.X, mouse.Y) - Vector2.new(number.X, number.Y)).magnitude -- distance from mouse to number ^^
+                    if mag < distance then -- if its less than the inf number or the last one then
+                        distance = mag -- set it as the new one
+                        target = v -- set target
+                    end
+            end
+        end
+    end
+    return target -- return the closest player
+end
+
+
+UIS.InputBegan:Connect(function(input) -- input began
+    if input.UserInputType == AimbotSettings.Keybind then -- input is aimbot keybind
+        aiming = true -- aiming to true
+    end
+end)
+UIS.InputEnded:Connect(function(input) -- input ended
+    if input.UserInputType == AimbotSettings.Keybind then -- input is aimbot keybind
+        aiming = false -- aiming to false
+    end
+end)
+
+
+RunService.RenderStepped:Connect(function() -- every frame ran loop
+    if aiming and getgenv().Aimbot then -- if aiming and aimbot is true
+        local goal = GetClosestPlayerToMouse().Character -- get closest players character
+        camera.CFrame = CFrame.new(camera.CFrame.Position, goal.Head.Position) -- change camera CFrame to the target
+    end
+    end)
+end)
 
 	local Visuals = Window:NewTab("Visuals")
 	local Section = Visuals:NewSection("Visuals")
