@@ -105,7 +105,11 @@ if _G.PrisonLife == true then
     MainSection:NewButton("Destroy Prison Cells (Client sided)", "Destroys prison cells", function()
         game.Workspace.Prison_Cellblock.Cells_B:Destroy()
         game.Workspace.Prison_Cellblock.Cells_A:Destroy()
-    end)    
+    end)
+    
+    MainSection:NewButton("Teleport to cop base", "Goes to cop hangout", function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(821.800171, 95.9900055, 2296.1001, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+    end)
   
 	-- PLAYER
 	local Player = Window:NewTab("Player")
